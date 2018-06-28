@@ -44,7 +44,7 @@ func StockCheck() {
     // Find the review items
     doc.Find(item.dom).Each(func(i int, s *goquery.Selection) {
       // For each item found, get the band and title
-      button_text := strings.ToLower(strings.TrimSpace(s.Find("span").Text()))
+      button_text := strings.ToLower(strings.TrimSpace(s.Text()))
       if(button_text == "sold out") {
         fmt.Printf("%s : %s\n", item.url, item.soldOut)
       } else {
