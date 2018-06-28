@@ -11,7 +11,7 @@ import (
   "encoding/json"
 
   "github.com/PuerkitoBio/goquery"
-  "github.com/gen2brain/beeep"
+  _ "github.com/gen2brain/beeep"
   _ "github.com/joho/godotenv/autoload"
 )
 
@@ -43,22 +43,8 @@ func StockCheck() {
       continue
     }
 
-    // Find the review items
-    doc.Find(item.dom).Each(func(i int, s *goquery.Selection) {
-      // For each item found, get the band and title
-      button_text := strings.ToLower(strings.TrimSpace(s.Text()))
-      if(button_text == "sold out") {
-        fmt.Printf("%s : %s\n", item.url, item.soldOut)
-      } else {
-        fmt.Printf("%s : %s\n", item.url, "IN STOCK")
-        err := beeep.Notify("In Stock Item", item.url, "assets/warehouse.png")
-        if err != nil {
-            panic(err)
-        }
-        message := buildTextMessage(item)
-        sendTextMessage(message)
-      }
-    })
+    isSoldOut := isSoldOut(doc, item)
+    fmt.Println(isSoldOut)
   }
 }
 
@@ -79,6 +65,23 @@ func getHtmlDoc(body io.ReadCloser) (*goquery.Document, error) {
     return nil, err
   }
   return doc, nil
+}
+
+func isSoldOut(doc *goquery.Document, item Item) bool {
+  var isSoldOut bool
+  doc.Find(item.dom).Each(func(i int, s *goquery.Selection) {
+    refText := cleanText(s.Text())
+    if(refText == item.soldOut) {
+      isSoldOut = true
+    } else {
+      isSoldOut = false
+    }
+  })
+  return isSoldOut
+}
+
+func cleanText(str string) string {
+  return strings.ToLower(strings.TrimSpace(str))
 }
 
 func sendTextMessage(messageText string) {
