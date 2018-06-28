@@ -100,20 +100,13 @@ func cleanText(str string) string {
 }
 
 func sendTextMessage(messageText string) {
-  urlStr := "https://api.twilio.com/2010-04-01/Accounts/" + os.Getenv("TWILIO_SID") + "/Messages.json"
+  url := "https://api.twilio.com/2010-04-01/Accounts/" + os.Getenv("TWILIO_SID") + "/Messages.json"
 
-  msgData := url.Values{}
-  msgData.Set("To",os.Getenv("TWILIO_PHONE_NUMBER_TO"))
-  msgData.Set("From",os.Getenv("TWILIO_PHONE_NUMBER_FROM"))
-  msgData.Set("Body",messageText)
+  msgData := getTextMessageData(messageText)
   msgDataReader := *strings.NewReader(msgData.Encode())
 
+  req := buildTextMessageRequest(url, &msgDataReader)
   client := &http.Client{}
-  req, _ := http.NewRequest("POST", urlStr, &msgDataReader)
-  req.SetBasicAuth(os.Getenv("TWILIO_SID"), os.Getenv("TWILIO_AUTH_TOKEN"))
-  req.Header.Add("Accept", "application/json")
-  req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-
   resp, _ := client.Do(req)
   if (resp.StatusCode >= 200 && resp.StatusCode < 300) {
     var data map[string]interface{}
@@ -125,6 +118,22 @@ func sendTextMessage(messageText string) {
   } else {
     fmt.Println(resp.Status);
   }
+}
+
+func getTextMessageData(messageText string) url.Values {
+  msgData := url.Values{}
+  msgData.Set("To",os.Getenv("TWILIO_PHONE_NUMBER_TO"))
+  msgData.Set("From",os.Getenv("TWILIO_PHONE_NUMBER_FROM"))
+  msgData.Set("Body",messageText)
+  return msgData
+}
+
+func buildTextMessageRequest(url string, msgDataReader *strings.Reader) *http.Request {
+  req, _ := http.NewRequest("POST", url, msgDataReader)
+  req.SetBasicAuth(os.Getenv("TWILIO_SID"), os.Getenv("TWILIO_AUTH_TOKEN"))
+  req.Header.Add("Accept", "application/json")
+  req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+  return req
 }
 
 func buildTextMessage(item Item) string {
