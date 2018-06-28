@@ -53,19 +53,20 @@ func StockCheck() {
         if err != nil {
             panic(err)
         }
-        sendTextMessage()
+        message := buildTextMessage(item)
+        sendTextMessage(message)
       }
     })
   }
 }
 
-func sendTextMessage() {
+func sendTextMessage(messageText string) {
   urlStr := "https://api.twilio.com/2010-04-01/Accounts/" + os.Getenv("TWILIO_SID") + "/Messages.json"
 
   msgData := url.Values{}
   msgData.Set("To",os.Getenv("TWILIO_PHONE_NUMBER_TO"))
   msgData.Set("From",os.Getenv("TWILIO_PHONE_NUMBER_FROM"))
-  msgData.Set("Body","SOMETHING IS IN STOCK")
+  msgData.Set("Body",messageText)
   msgDataReader := *strings.NewReader(msgData.Encode())
 
   client := &http.Client{}
@@ -85,6 +86,11 @@ func sendTextMessage() {
   } else {
     fmt.Println(resp.Status);
   }
+}
+
+func buildTextMessage(item Inventory) string {
+  message := "ITEM IN STOCK: " + item.name + "\nClick the link to buy it now:\n" + item.url
+  return message
 }
 
 func buildInventory() []Inventory {
