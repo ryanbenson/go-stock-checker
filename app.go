@@ -15,6 +15,10 @@ import (
 )
 
 type Inventory struct {
+  items []Item
+}
+
+type Item struct {
   name string
   url string
   dom string
@@ -24,7 +28,7 @@ type Inventory struct {
 func StockCheck() {
   inventory := buildInventory()
 
-  for _, item := range inventory {
+  for _, item := range inventory.items {
     // Request the HTML page.
     res, err := http.Get(item.url)
     if err != nil {
@@ -88,18 +92,19 @@ func sendTextMessage(messageText string) {
   }
 }
 
-func buildTextMessage(item Inventory) string {
+func buildTextMessage(item Item) string {
   message := "ITEM IN STOCK: " + item.name + "\nClick the link to buy it now:\n" + item.url
   return message
 }
 
-func buildInventory() []Inventory {
-  fullInventory := []Inventory{
-    Inventory{name: "Golden Russet", url: "https://www.treesofantiquity.com/index.php?main_page=product_info&products_id=53", dom: "#cartAdd", soldOut: "sold out"},
-    Inventory{name: "Black Oxford", url: "https://www.treesofantiquity.com/index.php?main_page=product_info&cPath=1&products_id=639", dom: "#cartAdd", soldOut: "sold out"},
-    Inventory{name: "Tree Starter Package", url: "https://www.treesofantiquity.com/index.php?main_page=product_info&cPath=44&products_id=3", dom: "#cartAdd", soldOut: "sold out"},
+func buildInventory() Inventory {
+  allItems := []Item{
+    Item{name: "Golden Russet", url: "https://www.treesofantiquity.com/index.php?main_page=product_info&products_id=53", dom: "#cartAdd", soldOut: "sold out"},
+    Item{name: "Black Oxford", url: "https://www.treesofantiquity.com/index.php?main_page=product_info&cPath=1&products_id=639", dom: "#cartAdd", soldOut: "sold out"},
+    Item{name: "Tree Starter Package", url: "https://www.treesofantiquity.com/index.php?main_page=product_info&cPath=44&products_id=3", dom: "#cartAdd", soldOut: "sold out"},
   }
-  return fullInventory
+  inventory := Inventory{items: allItems}
+  return inventory
 }
 
 func main() {
