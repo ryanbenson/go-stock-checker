@@ -1,6 +1,7 @@
 package main
 
 import (
+  "io"
   "os"
   "fmt"
   "log"
@@ -30,19 +31,16 @@ func StockCheck() {
 
   for _, item := range inventory.items {
     // Request the HTML page.
-    res, err := http.Get(item.url)
+    body, err := getPage(item.url)
     if err != nil {
-      log.Fatal(err)
-    }
-    defer res.Body.Close()
-    if res.StatusCode != 200 {
-      log.Fatalf("status code error: %d %s", res.StatusCode, res.Status)
+      log.Print(err)
+      continue
     }
 
-    // Load the HTML document
-    doc, err := goquery.NewDocumentFromReader(res.Body)
+    doc, err := getHtmlDoc(body)
     if err != nil {
-      log.Fatal(err)
+      log.Print(err)
+      continue
     }
 
     // Find the review items
@@ -62,6 +60,25 @@ func StockCheck() {
       }
     })
   }
+}
+
+func getPage(url string) (io.ReadCloser, error) {
+  res, err := http.Get(url)
+  if err != nil {
+    return nil, err
+  }
+  if res.StatusCode != 200 {
+    return nil, err
+  }
+  return res.Body, nil
+}
+
+func getHtmlDoc(body io.ReadCloser) (*goquery.Document, error) {
+  doc, err := goquery.NewDocumentFromReader(body)
+  if err != nil {
+    return nil, err
+  }
+  return doc, nil
 }
 
 func sendTextMessage(messageText string) {
