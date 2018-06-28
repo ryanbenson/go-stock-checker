@@ -8,7 +8,6 @@ import (
   "strings"
   "net/url"
   "net/http"
-  "encoding/json"
 
   "github.com/PuerkitoBio/goquery"
   "github.com/gen2brain/beeep"
@@ -109,14 +108,9 @@ func sendTextMessage(messageText string) {
   client := &http.Client{}
   resp, _ := client.Do(req)
   if (resp.StatusCode >= 200 && resp.StatusCode < 300) {
-    var data map[string]interface{}
-    decoder := json.NewDecoder(resp.Body)
-    err := decoder.Decode(&data)
-    if (err == nil) {
-      fmt.Println(data["sid"])
-    }
+    log.Println("Text message sent")
   } else {
-    fmt.Println(resp.Status);
+    log.Println(resp.Status);
   }
 }
 
