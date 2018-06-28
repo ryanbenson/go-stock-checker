@@ -11,7 +11,7 @@ import (
   "encoding/json"
 
   "github.com/PuerkitoBio/goquery"
-  _ "github.com/gen2brain/beeep"
+  "github.com/gen2brain/beeep"
   _ "github.com/joho/godotenv/autoload"
 )
 
@@ -30,7 +30,6 @@ func StockCheck() {
   inventory := buildInventory()
 
   for _, item := range inventory.items {
-    // Request the HTML page.
     body, err := getPage(item.url)
     if err != nil {
       log.Print(err)
@@ -44,7 +43,11 @@ func StockCheck() {
     }
 
     isSoldOut := isSoldOut(doc, item)
-    fmt.Println(isSoldOut)
+    if isSoldOut == true {
+      notifySoldOut(item)
+    } else {
+      notifyInStock(item)
+    }
   }
 }
 
@@ -76,6 +79,20 @@ func isSoldOut(doc *goquery.Document, item Item) bool {
     isSoldOut = false
   }
   return isSoldOut
+}
+
+func notifySoldOut(item Item) {
+  fmt.Printf("%s : %s\n", item.name, item.soldOut)
+}
+
+func notifyInStock(item Item) {
+  fmt.Printf("%s : %s\n", item.name, "IN STOCK")
+  err := beeep.Notify("In Stock Item", item.url, "assets/warehouse.png")
+  if err != nil {
+      panic(err)
+  }
+  message := buildTextMessage(item)
+  sendTextMessage(message)
 }
 
 func cleanText(str string) string {
