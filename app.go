@@ -69,14 +69,12 @@ func getHtmlDoc(body io.ReadCloser) (*goquery.Document, error) {
 
 func isSoldOut(doc *goquery.Document, item Item) bool {
   var isSoldOut bool
-  doc.Find(item.dom).Each(func(i int, s *goquery.Selection) {
-    refText := cleanText(s.Text())
-    if(refText == item.soldOut) {
-      isSoldOut = true
-    } else {
-      isSoldOut = false
-    }
-  })
+  refText := cleanText(doc.Find(item.dom).Text())
+  if(refText == item.soldOut) {
+    isSoldOut = true
+  } else {
+    isSoldOut = false
+  }
   return isSoldOut
 }
 
