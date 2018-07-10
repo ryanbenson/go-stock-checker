@@ -16,15 +16,13 @@ type Crawler struct{}
 // @return: error
 func (c Crawler) getPage(url string) (io.ReadCloser, error) {
   res, err := http.Get(url)
-  var body io.ReadCloser
   if err != nil {
     return nil, err
   }
   if res.StatusCode != 200 {
     return nil, errors.New("Page not available")
   }
-  body = res.Body
-  return body, err
+  return res.Body, err
 }
 
 // getHtmlDoc gets the DOM from the html contents
