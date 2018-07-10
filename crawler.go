@@ -2,6 +2,7 @@ package main
 
 import (
   "io"
+  "errors"
   "net/http"
 
   "github.com/PuerkitoBio/goquery"
@@ -15,13 +16,15 @@ type Crawler struct{}
 // @return: error
 func (c Crawler) getPage(url string) (io.ReadCloser, error) {
   res, err := http.Get(url)
+  var body io.ReadCloser
   if err != nil {
     return nil, err
   }
   if res.StatusCode != 200 {
-    return nil, err
+    return nil, errors.New("Page not available")
   }
-  return res.Body, nil
+  body = res.Body
+  return body, err
 }
 
 // getHtmlDoc gets the DOM from the html contents
