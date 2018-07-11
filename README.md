@@ -1,4 +1,4 @@
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/869ce453b78444b79ac627ade97d5eb0)](https://www.codacy.com/app/ryanbenson/go-stock-checker?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ryanbenson/go-stock-checker&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/869ce453b78444b79ac627ade97d5eb0)](https://www.codacy.com/app/ryanbenson/go-stock-checker?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ryanbenson/go-stock-checker&amp;utm_campaign=Badge_Grade) [![codecov](https://codecov.io/gh/ryanbenson/go-stock-checker/branch/master/graph/badge.svg)](https://codecov.io/gh/ryanbenson/go-stock-checker) [![Build Status](https://travis-ci.org/ryanbenson/go-stock-checker.svg?branch=master)](https://travis-ci.org/ryanbenson/go-stock-checker)
 
 # go-stock-checker
 Application to check on out of stock items from stores
