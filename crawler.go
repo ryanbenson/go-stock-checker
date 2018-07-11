@@ -29,7 +29,7 @@ func (c Crawler) getPage(url string) (io.ReadCloser, error) {
 // @params: body (io.ReadCloser)
 // @return: *goquery.Document
 // @return: error
-func (c Crawler) getHtmlDoc(body io.ReadCloser) (*goquery.Document, error) {
+func (c Crawler) getHTMLDoc(body io.ReadCloser) (*goquery.Document, error) {
   doc, err := goquery.NewDocumentFromReader(body)
   if err != nil {
     return nil, err

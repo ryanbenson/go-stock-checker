@@ -23,7 +23,7 @@ func (i Inventory) stockCheck() {
       continue
     }
 
-    doc, err := crawler.getHtmlDoc(body)
+    doc, err := crawler.getHTMLDoc(body)
     if err != nil {
       log.Print(err)
       continue
